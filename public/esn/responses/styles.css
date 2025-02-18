@@ -1,0 +1,39 @@
+.user-section {
+	background: white;
+	padding: 20px;
+	margin-bottom: 20px;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.response {
+	margin: 15px 0;
+	padding: 0 15px;
+	border-left: 4px solid var(--main-color);
+	background: #f8f9fa;
+}
+
+.question {
+	margin: 10px 0;
+}
+
+.question p {
+	margin: 5px 0 0 15px;
+	color: #666;
+}
+
+.forceactive .toggle-icon {
+	transform: rotate(180deg);
+}
+
+.accordion.forceactive .accordion-content {
+	display: block;
+}
+
+.forceactive button {
+	display: none;
+}
+
+.container {
+	padding: 0 25px;
+}

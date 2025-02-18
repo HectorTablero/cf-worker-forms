@@ -1,0 +1,367 @@
+:root {
+	--main-color: #0076b4;
+	--hover-color: #094d70;
+	--text-color: #333;
+	--body-font-size: 1rem;
+	--background-color: #eaeaea;
+	--font-family: Roboto, Arial, sans-serif;
+	--input-border-color: #bbb;
+	--content-box-background-color: #ddd;
+	--input-border-radius: 4px;
+	--input-padding: 8px;
+	--input-focus-color: var(--main-color);
+	--skeleton-color: #cacaca;
+	--skeleton-glow: linear-gradient(-45deg, #cacaca 40%, #f0f0f0 50%, #cacaca 60%);
+	--icon-color: #aaaaaa;
+	--card-filled-color: #b2e6b6; /* Light green for filled cards */
+}
+
+body {
+	font-family: var(--font-family);
+	margin: 0;
+	padding: 0;
+	background-color: var(--background-color);
+	color: var(--text-color);
+	font-size: var(--body-font-size);
+}
+
+h1 {
+	font-size: 3rem;
+	color: var(--main-color);
+	margin: 0.25em 0;
+}
+
+h2 {
+	font-size: 2.25rem;
+	color: var(--main-color);
+	margin: 0.25em 0;
+}
+
+h3 {
+	font-size: 1.75rem;
+	color: var(--main-color);
+	margin: 0.25em 0;
+}
+
+h4 {
+	font-size: 1.25rem;
+	color: var(--main-color);
+	margin: 0.25em 0;
+}
+
+p {
+	font-size: 1rem;
+	line-height: 1.5;
+	margin: 0.5em 0;
+}
+
+.center {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100vw;
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+}
+
+.horizontal {
+	display: flex;
+	gap: 0.5rem;
+}
+
+a {
+	color: var(--main-color);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a.button,
+button {
+	position: relative;
+	padding: 10px 20px;
+	margin-bottom: 10px;
+	font-size: var(--body-font-size);
+	color: #fff;
+	background-color: var(--main-color);
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.2s ease-in-out;
+}
+
+a.button:hover,
+button:hover {
+	background-color: var(--hover-color);
+	text-decoration: initial;
+}
+
+button[disabled] {
+	filter: opacity(0.5) saturate(0.75);
+	cursor: not-allowed;
+}
+
+button[disabled]:hover {
+	background-color: var(--main-color);
+}
+
+button.loading:not(.icon-btn) {
+	padding-left: 35px;
+}
+
+button.loading.icon-btn::before {
+	background-image: none;
+	border-top: 2px solid var(--icon-color);
+}
+
+button.loading::before {
+	content: '';
+	border: 2px solid transparent;
+	border-top: 2px solid #fff;
+	border-radius: 50%;
+	animation: spin 1s linear infinite;
+	box-sizing: border-box;
+}
+
+button.loading:not(.icon-btn)::before {
+	position: absolute;
+	left: 10px;
+	width: 15px;
+	height: 15px;
+	top: 50%;
+	translate: 0-50%;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+select,
+input[type='email'],
+input[type='password'],
+input[type='text'],
+textarea {
+	width: 100%;
+	padding: var(--input-padding);
+	font-size: var(--body-font-size);
+	color: var(--text-color);
+	border: 1px solid var(--input-border-color);
+	border-radius: var(--input-border-radius);
+	box-sizing: border-box;
+	margin-bottom: 10px;
+	transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+select:focus,
+input[type='email']:focus,
+input[type='password']:focus,
+input[type='text']:focus,
+textarea:focus {
+	outline: 0;
+	border-color: var(--input-focus-color);
+	box-shadow: 0 0 3px var(--input-focus-color);
+}
+
+textarea {
+	resize: vertical;
+	min-height: 100px;
+}
+
+/* Style for select dropdown (choice type) */
+select {
+	background-color: #fff;
+	appearance: none; /* Remove default arrow */
+	cursor: pointer;
+}
+
+select:focus {
+	outline: 0;
+	border-color: var(--input-focus-color);
+	box-shadow: 0 0 3px var(--input-focus-color);
+}
+
+/* Custom dropdown arrow */
+.select-wrapper {
+	position: relative;
+	width: 100%;
+}
+
+.select-wrapper::after {
+	content: '▼';
+	position: absolute;
+	top: 50%;
+	right: 10px;
+	transform: translateY(-50%);
+	pointer-events: none;
+	color: var(--input-border-color);
+	font-size: 0.75rem;
+}
+
+/* Style for checkbox group */
+.checkbox-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.checkbox-group label {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	cursor: pointer;
+	font-size: var(--body-font-size);
+	color: var(--text-color);
+}
+
+.checkbox-group input[type='checkbox'] {
+	width: 16px;
+	height: 16px;
+	margin: 0;
+	cursor: pointer;
+	accent-color: var(--main-color); /* Use main color for checkbox */
+}
+
+.checkbox-group input[type='checkbox']:focus {
+	outline: 2px solid var(--input-focus-color);
+	outline-offset: 2px;
+}
+
+/* Hover effect for checkboxes */
+.checkbox-group label:hover {
+	color: var(--main-color);
+}
+
+label {
+	font-size: var(--body-font-size);
+	color: var(--text-color);
+	display: block;
+	margin-bottom: 5px;
+}
+
+form {
+	max-width: 500px;
+	margin: 20px auto;
+}
+
+#bodyContent {
+	padding: 20px;
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+/* Accordion Styles */
+#app {
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.badge-group {
+	margin-bottom: 2rem;
+	max-width: 800px;
+	width: 100%;
+}
+
+.accordion {
+	border: 1px solid var(--input-border-color);
+	border-radius: 8px;
+	margin-bottom: 1rem;
+	background-color: #fff;
+	transition: background-color 0.2s ease-in-out;
+}
+
+.accordion.filled {
+	background-color: var(--card-filled-color); /* Light green for filled cards */
+}
+
+.accordion-header {
+	display: flex;
+	align-items: center;
+	padding: 1rem;
+	cursor: pointer;
+	gap: 1rem;
+	transition: background-color 0.2s ease-in-out;
+}
+
+.accordion-header:hover {
+	background-color: #f3f4f6;
+	border-radius: 8px;
+}
+
+.filled .accordion-header:hover {
+	background-color: #a7d4ab;
+	border-radius: 8px;
+}
+
+.user-img {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.user-info {
+	flex-grow: 1;
+}
+
+.name {
+	font-weight: bold;
+}
+
+.email {
+	font-size: 0.875rem;
+	color: #666;
+}
+
+.tags {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+	margin-top: 0.25rem;
+}
+
+.tag {
+	padding: 0.25rem 0.75rem;
+	border-radius: 9999px;
+	font-size: 0.875rem;
+	background-color: var(--content-box-background-color);
+	color: var(--text-color);
+}
+
+.accordion-content {
+	padding: 1rem;
+	border-top: 1px solid var(--input-border-color);
+	display: none;
+}
+
+.accordion.active .accordion-content {
+	display: block;
+}
+
+.form-group {
+	margin-bottom: 1rem;
+}
+
+.toggle-icon {
+	margin-left: auto;
+	transition: transform 0.2s;
+}
+
+.active .toggle-icon {
+	transform: rotate(180deg);
+}
+
+/* Card filled state */
+.accordion.filled {
+	background-color: var(--card-filled-color);
+}
