@@ -11,6 +11,15 @@ function groupResponses() {
 			}
 		});
 	});
+
+	// Randomize order within each group using Fisher-Yates shuffle
+	Object.values(grouped).forEach((group) => {
+		for (let i = group.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[group[i], group[j]] = [group[j], group[i]];
+		}
+	});
+
 	return grouped;
 }
 

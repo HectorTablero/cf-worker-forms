@@ -55,7 +55,7 @@ function initializeApp() {
 								<div class="name">${person.name}</div>
 								<div class="email">${person.email}</div>
 								<div class="tags">
-									${person.badges
+									${(person.badges || [])
 										.map(
 											(c) => `
 										<span class="tag">${c}</span>
