@@ -50,7 +50,7 @@ function initializeApp() {
 						(person) => `
 					<div class="accordion" data-email="${person.email}">
 						<div class="accordion-header">
-							<img src="${person.img}" class="user-img" alt="${person.name}">
+							<img src="${person.img || 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'}" class="user-img" alt="${person.name}">
 							<div class="user-info">
 								<div class="name">${person.name}</div>
 								<div class="email">${person.email}</div>

@@ -4,6 +4,38 @@ import { newbieFeedbackFromVolunteers } from '../views/esn/newbieFeedbackFromVol
 import { newbieFeedbackResponses } from '../views/esn/responses/newbieFeedbackResponses';
 import { volunteerFeedbackResponses } from '../views/esn/responses/volunteerFeedbackResponses';
 
+async function getAllKeyNames(kv, query) {
+	let keys = [];
+	let cursor = undefined;
+
+	do {
+		const response = await kv.list({ ...query, cursor });
+		keys = keys.concat(response.keys.map(({ name }) => name));
+		cursor = response.cursor;
+	} while (cursor);
+
+	return keys;
+}
+
+async function bulkDeleteKeys(env, keys) {
+	// Maximum keys per batch request
+	const BATCH_SIZE = 10000;
+
+	for (let i = 0; i < keys.length; i += BATCH_SIZE) {
+		const batch = keys.slice(i, i + BATCH_SIZE);
+
+		const url = `https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ACCOUNT_ID}/storage/kv/namespaces/${env.ESN_RECRUITMENT_ID}/bulk`;
+		await fetch(url, {
+			method: 'DELETE',
+			headers: {
+				Authorization: `Bearer ${env.KV_API_TOKEN}`,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(batch),
+		});
+	}
+}
+
 export const retryPage = (redirect, email) => `
 <!DOCTYPE html>
 <html>
@@ -97,11 +129,15 @@ export default {
 						const action = formData.get('action');
 
 						if (action === 'deleteAll') {
-							const list = (await env.FORMS.get(`forms:esn:${feedbackType}:${listType}`, 'json')) || [];
-							for (const user of list) {
-								await env.FORMS.delete(`forms:esn:${feedbackType}:${user.email}:savedAnswers`);
+							const prefix = `forms:esn:${feedbackType}:`;
+							const allKeys = await getAllKeyNames(env.FORMS, { prefix });
+
+							const keysToDelete = allKeys.filter((key) => !key.endsWith(listType));
+
+							if (keysToDelete.length > 0) {
+								await bulkDeleteKeys(env, keysToDelete);
 							}
-							await env.FORMS.delete(`forms:esn:${feedbackType}:cache`);
+
 							return new Response('All answers deleted', { status: 200 });
 						} else if (action === 'updateList') {
 							const newList = formData.get('list');
