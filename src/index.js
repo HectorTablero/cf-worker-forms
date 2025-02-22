@@ -21,10 +21,12 @@ async function bulkDeleteKeys(env, keys) {
 	// Maximum keys per batch request
 	const BATCH_SIZE = 10000;
 
+	console.log(keys);
+
 	for (let i = 0; i < keys.length; i += BATCH_SIZE) {
 		const batch = keys.slice(i, i + BATCH_SIZE);
 
-		const url = `https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ACCOUNT_ID}/storage/kv/namespaces/${env.ESN_RECRUITMENT_ID}/bulk`;
+		const url = `https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ACCOUNT_ID}/storage/kv/namespaces/${env.FORMS_ID}/bulk`;
 		await fetch(url, {
 			method: 'DELETE',
 			headers: {

@@ -177,6 +177,22 @@ function initializeApp() {
 	if (AUTO_SAVE_INTERVAL_MS > 0) {
 		startAutoSave();
 	}
+
+	window.addEventListener('beforeunload', (event) => {
+		// Get the current answers
+		const currentAnswers = updateCurrentAnswers();
+
+		// Compare with the previously saved answers
+		if (JSON.stringify(currentAnswers) !== JSON.stringify(previousAnswers)) {
+			// Prepare the payload and URL
+			const url = window.location.pathname;
+			const payload = JSON.stringify(currentAnswers);
+			const blob = new Blob([payload], { type: 'application/json' });
+
+			// Use sendBeacon to send data reliably before unload
+			navigator.sendBeacon(url, blob);
+		}
+	});
 }
 
 function updateCurrentAnswers() {
