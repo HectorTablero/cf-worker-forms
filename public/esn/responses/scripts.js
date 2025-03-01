@@ -106,7 +106,7 @@ function renderResponses(grouped) {
 
 			// Optional: Add a header for the response
 			const responseHeader = document.createElement('h3');
-		  	responseHeader.textContent = `Respuesta ${"de " + responseData.responderEmail.split("@")[0]) || index + 1}`;
+		  	responseHeader.textContent = `Respuesta ${("de " + responseData.responderEmail.split("@")[0]) || index + 1}`;
 			responseDiv.appendChild(responseHeader);
 
 			// For each answer (keyed by question id) in the response…
