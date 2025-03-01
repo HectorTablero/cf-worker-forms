@@ -176,31 +176,33 @@ export default {
 					const responseKeys = keys.filter((key) => key.name.endsWith(':savedAnswers'));
 
 					const responses = [];
+					const deAnonResponses = [];
 
-					for (const keyInfo of responseKeys) {
-						// Expect key format: forms:esn:${feedbackType}:${email}:savedAnswers
-						const parts = keyInfo.name.split(':');
-						if (parts.length !== 5) continue;
-						const email = parts[3];
-
-						// Use metadata from the list result
-						const lastUpdated = keyInfo.metadata?.updatedAt || 0;
-
-						// Only update if the new metadata is more recent or not cached yet
-						if (!cache[email] || lastUpdated > cache[email]) {
-							updatedCache[email] = lastUpdated;
-						}
-
-						// Fetch the actual data (you could optimize further if you cache data as well)
-						const value = await env.FORMS.get(keyInfo.name);
-						if (!value) continue;
-
-						responses.push(JSON.parse(value));
+				for (const keyInfo of responseKeys) {
+					const parts = keyInfo.name.split(':');
+					if (parts.length !== 5) continue;
+					const targetEmail = parts[3]; // This is the email of the person being responded to
+				
+					const lastUpdated = keyInfo.metadata?.updatedAt || 0;
+					if (!cache[targetEmail] || lastUpdated > cache[targetEmail]) {
+						updatedCache[targetEmail] = lastUpdated;
 					}
+				
+					const value = await env.FORMS.get(keyInfo.name);
+					if (!value) continue;
+					const parsedResponse = JSON.parse(value);
+				
+					responses.push(parsedResponse);
+				
+					deAnonResponses.push({
+						...parsedResponse,
+						responderEmail: parsedResponse.responderEmail || targetEmail,
+					});
+				}
 
 					await env.FORMS.put(cacheKey, JSON.stringify(updatedCache));
 					if (partialUrl.includes('newbie')) {
-						return new Response(newbieFeedbackResponses(userList, responses), { headers: { 'Content-Type': 'text/html' } });
+						return new Response(newbieFeedbackResponses(userList, deAnonResponses), { headers: { 'Content-Type': 'text/html' } });
 					} else if (partialUrl.includes('volunteer')) {
 						return new Response(volunteerFeedbackResponses(userList, responses), { headers: { 'Content-Type': 'text/html' } });
 					}
