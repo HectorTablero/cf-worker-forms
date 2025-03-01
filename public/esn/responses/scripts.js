@@ -29,6 +29,13 @@ function renderResponses(grouped) {
 	const container = document.getElementById('responsesContainer');
 	container.innerHTML = '';
 
+	let anon = true;
+	try {
+		anon = anonymized;
+	} catch (e) {
+		anon = true;
+	}
+
 	for (const email in grouped) {
 		const userGroup = grouped[email];
 		// Find the person data (name, pfp, etc.) using the email
@@ -106,7 +113,11 @@ function renderResponses(grouped) {
 
 			// Optional: Add a header for the response
 			const responseHeader = document.createElement('h3');
-			responseHeader.textContent = `Respuesta ${index + 1}`;
+			if (!anon) {
+			  responseHeader.textContent = `Respuesta de ${responseData.responderEmail.split("@")[0]}`;
+			} else {
+			  responseHeader.textContent = `Respuesta ${index + 1}`;
+			}
 			responseDiv.appendChild(responseHeader);
 
 			// For each answer (keyed by question id) in the response…
