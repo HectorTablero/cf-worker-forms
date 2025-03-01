@@ -13,6 +13,7 @@ export const newbieFeedbackResponses = (userList, responses) => `
   </head>
   <body>
     <script>
+			const anonymized = false;
       const peopleData = ${typeof userList === 'string' ? userList : JSON.stringify(userList)};
       const responses = ${typeof responses === 'string' ? responses : JSON.stringify(responses)};
       const formQuestions = [
