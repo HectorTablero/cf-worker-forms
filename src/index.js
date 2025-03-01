@@ -193,11 +193,11 @@ export default {
 					const parsedResponse = JSON.parse(value);
 				
 					responses.push(parsedResponse);
+
+					let deAnonResponse = JSON.parse(value);
+					Object.keys(deAnonResponse).forEach((e) => deAnonResponse[e].responderEmail = parsedResponse.responderEmail || targetEmail);
 				
-					deAnonResponses.push({
-						...parsedResponse,
-						responderEmail: parsedResponse.responderEmail || targetEmail,
-					});
+					deAnonResponses.push(deAnonResponse);
 				}
 
 					await env.FORMS.put(cacheKey, JSON.stringify(updatedCache));
