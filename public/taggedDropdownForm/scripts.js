@@ -1,6 +1,58 @@
+// TODO: Unify all the code to send the data and use only code specific functions to render the form and extract the answers
+
 const AUTO_SAVE_INTERVAL_MS = 10000; // 10 seconds, set to 0 to disable auto-save
 let previousAnswers = savedAnswers || {};
 let autoSaveTimer;
+
+// 1. Create the badge element and inject the CSS for the badge and animations.
+(function createSaveBadge() {
+	// Create the badge element.
+	const badge = document.createElement('div');
+	badge.id = 'saveBadge';
+	document.body.appendChild(badge);
+
+	// Create a global saveBadge helper object to control the badge.
+	window.saveBadge = {
+		badgeElement: badge,
+		// SVG icons provided in the instructions:
+		savingIcon: `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M204-318q-22-38-33-78t-11-82q0-134 93-228t227-94h7l-64-64 56-56 160 160-160 160-56-56 64-64h-7q-100 0-170 70.5T240-478q0 26 6 51t18 49l-60 60ZM481-40 321-200l160-160 56 56-64 64h7q100 0 170-70.5T720-482q0-26-6-51t-18-49l60-60q22 38 33 78t11 82q0 134-93 228t-227 94h-7l64 64-56 56Z"/></svg>`,
+		checkIcon: `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>`,
+		errorIcon: `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>`,
+		// Shows the badge with a specific status.
+		show: function (status) {
+			// Clear any pending hide timeout.
+			if (this.hideTimeout) {
+				clearTimeout(this.hideTimeout);
+			}
+			// Update badge content based on status.
+			if (status === 'saving') {
+				this.badgeElement.innerHTML = `<span class="icon spinning">${this.savingIcon}</span><span class="text">Guardando...</span>`;
+			} else if (status === 'saved') {
+				this.badgeElement.innerHTML = `<span class="icon">${this.checkIcon}</span><span class="text">Guardado</span>`;
+			} else if (status === 'error') {
+				this.badgeElement.innerHTML = `<span class="icon">${this.errorIcon}</span><span class="text">Error</span>`;
+			}
+			// Ensure that the spinning animation is applied only when saving.
+			const iconSpan = this.badgeElement.querySelector('.icon');
+			if (iconSpan && status !== 'saving') {
+				iconSpan.classList.remove('spinning');
+			}
+			// Slide the badge into view.
+			this.badgeElement.classList.add('visible');
+		},
+		// Hides the badge by sliding it out.
+		hide: function () {
+			this.badgeElement.classList.remove('visible');
+		},
+		// Schedules the badge to slide up after a given delay (in ms).
+		scheduleHide: function (delay) {
+			var self = this;
+			this.hideTimeout = setTimeout(function () {
+				self.hide();
+			}, delay);
+		},
+	};
+})();
 
 function initializeApp() {
 	const viewer = peopleData.find((p) => p.email === viewerEmail) || { email: viewerEmail, badges: [] };
@@ -235,18 +287,31 @@ function saveAnswers(isAutoSave = false) {
 		saveAnswersBtn.classList.add('loading');
 	}
 
+	window.saveBadge.show('saving');
+
 	fetch(window.location.pathname, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify(answers),
-	}).then(() => {
-		if (!isAutoSave) {
-			const saveAnswersBtn = document.getElementById('saveAnswers');
-			saveAnswersBtn.classList.remove('loading');
-		}
-	});
+	})
+		.then((response) => {
+			if (!response.ok) {
+				throw new Error('Network response was not ok');
+			}
+			window.saveBadge.show('saved');
+		})
+		.catch((e) => {
+			window.saveBadge.show('error');
+		})
+		.finally(() => {
+			if (!isAutoSave) {
+				const saveAnswersBtn = document.getElementById('saveAnswers');
+				saveAnswersBtn.classList.remove('loading');
+			}
+			window.saveBadge.scheduleHide(2000);
+		});
 }
 
 initializeApp();

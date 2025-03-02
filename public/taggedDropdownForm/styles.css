@@ -365,3 +365,55 @@ form {
 .accordion.filled {
 	background-color: var(--card-filled-color);
 }
+
+/*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
+
+/* Badge container */
+#saveBadge {
+	position: fixed;
+	top: -60px; /* Start off-screen */
+	right: 20px;
+	background: #333;
+	color: #e8eaed;
+	padding: 10px 15px;
+	border-radius: 5px;
+	display: flex;
+	align-items: center;
+	transition: top 0.5s ease;
+	min-width: 150px; /* Fixed size so the badge doesn’t change size */
+	z-index: 1000;
+}
+/* When visible, slide into view */
+#saveBadge.visible {
+	top: 20px;
+}
+#saveBadge .icon {
+	margin-right: 10px;
+	display: flex;
+	align-items: center;
+}
+
+.spinning {
+	animation: spin 1s linear infinite;
+}
