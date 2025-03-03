@@ -1,6 +1,6 @@
 // TODO: Unify all the code to send the data and use only code specific functions to render the form and extract the answers
 
-const AUTO_SAVE_INTERVAL_MS = 10000; // 10 seconds, set to 0 to disable auto-save
+const AUTO_SAVE_INTERVAL_MS = 30000; // 10 seconds, set to 0 to disable auto-save
 let previousAnswers = savedAnswers || {};
 let autoSaveTimer;
 
